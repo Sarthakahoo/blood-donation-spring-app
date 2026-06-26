@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Donation Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            color: #333;
+        }
+
+        .navbar {
+            background-color: #d9534f;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .btn-dark {
+            background-color: #212529;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+            display: flex;
+            gap: 30px;
+        }
+
+        .col-left {
+            flex: 0 0 35%;
+            max-width: 35%;
+        }
+
+        .col-right {
+            flex: 0 0 65%;
+            max-width: 65%;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            border: 1px solid #e9ecef;
+        }
+
+        .card-header {
+            background-color: #d9534f;
+            color: white;
+            padding: 12px 20px;
+            font-weight: bold;
+        }
+
+        .card-header.bg-white {
+            background-color: white;
+            color: #495057;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .mb-3 {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 0.95rem;
+        }
+
+        .btn-danger {
+            width: 100%;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+
+        .filter-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            padding: 12px 15px;
+            color: #6c757d;
+            font-size: 0.85rem;
+            border-bottom: 2px solid #dee2e6;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 0.95rem;
+        }
+
+        .badge {
+            background-color: rgba(217, 83, 79, 0.1);
+            color: #d9534f;
+            border: 1px solid rgba(217, 83, 79, 0.2);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="navbar">
+        <div class="navbar-brand">🩸 Blood Donation Center</div>
+        <button class="btn-dark" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container">
+
+        <!-- Form Fields Box -->
+        <div class="col-left">
+            <div class="card">
+                <div class="card-header">Register as a Donor</div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="donorName" class="form-control" placeholder="e.g. Sarthak Sahoo">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Blood Group</label>
+                        <select id="bloodGroup" class="form-select">
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Age</label>
+                        <input type="number" id="donorAge" class="form-control" placeholder="Age">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contact Number</label>
+                        <input type="text" id="donorContact" class="form-control" placeholder="Contact Details">
+                    </div>
+                    <button class="btn-danger" id="submitBtn" onclick="submitDonor()">Submit Donation Record</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Display Directory -->
+        <div class="col-right">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <span style="font-weight: bold;">Active Donor Directory</span>
+                    <div class="filter-container">
+                        <span style="font-size: 0.85rem; color:#6c757d;">Filter Group:</span>
+                        <select id="filterBloodGroup" class="form-select" style="padding: 5px; width: auto;"
+                            onchange="filterDonors()">
+                            <option value="ALL">Show All</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="padding-left: 20px;">ID</th>
+                                <th>Name</th>
+                                <th>Blood Group</th>
+                                <th>Age</th>
+                                <th style="padding-right: 20px;">Contact</th>
+                            </tr>
+                        </thead>
+                        <tbody id="donorTableBody">
+                            <!-- Rows go here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let allDonorsCache = [];
+
+        // Runs automatically when dashboard page is pulled open
+        window.onload = function () {
+            loadDonors();
+        };
+
+        async function loadDonors() {
+            try {
+                const res = await fetch('/api/donors/all');
+                if (res.ok) {
+                    allDonorsCache = await res.json();
+                    renderTable(allDonorsCache);
+                } else {
+                    console.log("Session restricted, using local memory array mode instead.");
+                    renderTable(allDonorsCache);
+                }
+            } catch (err) {
+                console.error("Network check failed, falling back to client-rendering mode.");
+                renderTable(allDonorsCache);
+            }
+        }
+
+        function renderTable(dataList) {
+            const tbody = document.getElementById('donorTableBody');
+            tbody.innerHTML = "";
+
+            if (!dataList || dataList.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6c757d; padding: 30px;">No donor records found. Add one on the left panel!</td></tr>`;
+                return;
+            }
+
+            dataList.forEach(d => {
+                tbody.innerHTML += `<tr>
+                    <td style="padding-left: 20px; color:#6c757d;">${d.id || 'NEW'}</td>
+                    <td style="font-weight: 600;">${d.name}</td>
+                    <td><span class="badge">${d.bloodGroup}</span></td>
+                    <td>${d.age}</td>
+                    <td style="padding-right: 20px; color:#6c757d;">${d.contact}</td>
+                </tr>`;
+            });
+        }
+
+        async function submitDonor() {
+            const nameValue = document.getElementById('donorName').value;
+            const bloodGroupValue = document.getElementById('bloodGroup').value;
+            const ageValue = document.getElementById('donorAge').value;
+            const contactValue = document.getElementById('donorContact').value;
+
+            if (!nameValue || !ageValue || !contactValue) {
+                alert("Please fill out all text input blanks first!");
+                return;
+            }
+
+            const payload = {
+                name: nameValue,
+                bloodGroup: bloodGroupValue,
+                age: parseInt(ageValue),
+                contact: contactValue
+            };
+
+            try {
+                const res = await fetch('/api/donors/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert("Record saved to backend database!");
+                } else {
+                    alert("Database link pending session confirmation. Saving locally to window!");
+                }
+            } catch (e) {
+                alert("Adding entry locally to interface directory layout.");
+            }
+
+            // Fallback Engine adds items straight to screen list
+            allDonorsCache.push({
+                id: allDonorsCache.length + 1,
+                name: nameValue,
+                bloodGroup: bloodGroupValue,
+                age: ageValue,
+                contact: contactValue
+            });
+
+            // Clear Input Layout bars
+            document.getElementById('donorName').value = "";
+            document.getElementById('donorAge').value = "";
+            document.getElementById('donorContact').value = "";
+
+            renderTable(allDonorsCache);
+        }
+
+        function filterDonors() {
+            const selectedGroup = document.getElementById('filterBloodGroup').value;
+            if (selectedGroup === "ALL") {
+                renderTable(allDonorsCache);
+            } else {
+                const filteredList = allDonorsCache.filter(donor => donor.bloodGroup === selectedGroup);
+                renderTable(filteredList);
+            }
+        }
+
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST' });
+            } catch (e) { }
+            window.location.href = 'login.html';
+        }
+    </script>

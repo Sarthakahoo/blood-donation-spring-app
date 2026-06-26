@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blood Donation - Login</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f7f9fa; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 300px; text-align: center;}
+        h2 { color: #d9534f; margin-bottom: 20px;}
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #d9534f; border: none; color: white; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #c9302c; }
+        a { display: block; margin-top: 15px; color: #337ab7; text-decoration: none; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>User Login</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="handleLogin()">Login</button>
+        <a href="register.html">Don't have an account? Sign Up</a>
+    </div>
+
+    <script>
+        async function handleLogin() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: u, password: p })
+            });
+            const data = await res.json();
+            if(res.ok) {
+                window.location.href = 'dashboard.html';
+            } else {
+                alert(data.message);
+            }
+        }
+    </script>
+</body>
+</html>
