@@ -234,7 +234,9 @@
                                 <th>Name</th>
                                 <th>Blood Group</th>
                                 <th>Age</th>
-                                <th style="padding-right: 20px;">Contact</th>
+                                <th>Contact</th>
+                                <th style="padding-right: 20px; text-align: center;">Actions</th> <!-- Add This -->
+
                             </tr>
                         </thead>
                         <tbody id="donorTableBody">
@@ -276,20 +278,25 @@
             tbody.innerHTML = "";
 
             if (!dataList || dataList.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#6c757d; padding: 30px;">No donor records found. Add one on the left panel!</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:#6c757d; padding: 30px;">No donor records found.</td></tr>`;
                 return;
             }
 
             dataList.forEach(d => {
                 tbody.innerHTML += `<tr>
-                    <td style="padding-left: 20px; color:#6c757d;">${d.id || 'NEW'}</td>
-                    <td style="font-weight: 600;">${d.name}</td>
-                    <td><span class="badge">${d.bloodGroup}</span></td>
-                    <td>${d.age}</td>
-                    <td style="padding-right: 20px; color:#6c757d;">${d.contact}</td>
-                </tr>`;
+            <td style="padding-left: 20px; color:#6c757d;">${d.id || 'NEW'}</td>
+            <td style="font-weight: 600;">${d.name}</td>
+            <td><span class="badge">${d.bloodGroup}</span></td>
+            <td>${d.age}</td>
+            <td style="color:#6c757d;">${d.contact}</td>
+            <!-- Delete Button Element Block -->
+            <td style="padding-right: 20px; text-align: center;">
+                <button onclick="deleteDonorFromServer(${d.id})" style="background-color: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: bold;">Delete</button>
+            </td>
+        </tr>`;
             });
         }
+
 
         async function submitDonor() {
             const nameValue = document.getElementById('donorName').value;
@@ -341,6 +348,27 @@
 
             renderTable(allDonorsCache);
         }
+
+        async function deleteDonorFromServer(id) {
+            if (!confirm("Are you sure you want to delete this donor record?")) return;
+
+            try {
+                const res = await fetch(`/api/donors/delete/${id}`, {
+                    method: 'DELETE'
+                });
+                if (res.ok) {
+                    alert("Record deleted from MySQL database!");
+                }
+            } catch (err) {
+                console.log("Network fallback mode execution.");
+            }
+
+            // Update local cache view instantly
+            allDonorsCache = allDonorsCache.filter(donor => donor.id !== id);
+            renderTable(allDonorsCache);
+        }
+
+
 
         function filterDonors() {
             const selectedGroup = document.getElementById('filterBloodGroup').value;

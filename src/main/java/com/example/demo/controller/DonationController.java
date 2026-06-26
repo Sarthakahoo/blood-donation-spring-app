@@ -34,4 +34,15 @@ public class DonationController {
         List<Donor> donors = donorRepository.findAll();
         return ResponseEntity.ok(donors);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteDonor(@PathVariable Long id) {
+        if (donorRepository.existsById(id)) {
+            donorRepository.deleteById(id);
+            return ResponseEntity.ok(Map.of("message", "Donor record deleted successfully!"));
+        }
+        return ResponseEntity.status(404).body(Map.of("message", "Record not found!"));
+    }
+
+
 }
