@@ -1,6 +1,10 @@
 pipeline {
     agent any
     
+    tools {
+        maven 'Maven3' // Tells Jenkins to automatically use our configured Maven tool
+    }
+    
     stages {
         stage('Compile') {
             steps {
